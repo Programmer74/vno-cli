@@ -20,4 +20,5 @@ void branch::do_branch(string branch_name) {
     utils::write_to_file(".vno/branches/" + branch_name, last_commit_hash);
     
     cout << "Creating branch " << branch_name << " done." << endl;
+    cout << "Remember to checkout to branch to develop there!" << endl;
 }

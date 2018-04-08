@@ -6,19 +6,15 @@
 #include <fstream>
 
 #include "utils.h"
+#include "status.h"
 
 using namespace std;
 
-void checkout::do_checkout(string commit_hash) {
-    cout << "Checkout to " << commit_hash << " called" << endl;
-    
+void checkout_to_commit(string commit_hash) {
+    cout << "Checking out to " << commit_hash << "..." << endl;
+
     utils::rm_rf_files();
     cout << "Working directory cleaned" << endl;
-    
-    if (!utils::exists_file(".vno/commits/" + commit_hash)) {
-        cerr << "Cannot find " << commit_hash << endl;
-        return;
-    }
     
     ifstream commitfile;
     commitfile.open(".vno/commits/" + commit_hash);
@@ -56,4 +52,26 @@ void checkout::do_checkout(string commit_hash) {
     
     //updating to this commit
     utils::write_to_file(".vno/head", commit_hash);
+}
+
+void checkout::do_checkout(string checkout_to) {
+    cout << "Checkout to " << checkout_to << " called" << endl;
+    
+    if (status::do_status() != 0) {
+        cerr << "Cannot do checkout: working directory not clean!" << endl;
+        return;
+    }
+    
+    if (utils::exists_file(".vno/commits/" + checkout_to)) {
+        checkout_to_commit(checkout_to);
+        return;
+    }
+    
+    if (utils::exists_file(".vno/branches/" + checkout_to)) {
+        string commit_hash = utils::read_line_from_file(".vno/branches/" + checkout_to, 0);
+        checkout_to_commit(commit_hash);
+        return;
+    }
+    
+    cerr << "Cannot find " << checkout_to << endl;
 }
