@@ -1,3 +1,4 @@
+inc/branch.h
 inc/checkout.h
 inc/commit.h
 inc/init.h
@@ -5,6 +6,7 @@ inc/log.h
 inc/status.h
 inc/utils.h
 inc/utils.h
+src/branch.cpp
 src/checkout.cpp
 src/commit.cpp
 src/init.cpp

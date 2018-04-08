@@ -10,6 +10,7 @@
 #include "checkout.h"
 #include "status.h"
 #include "log.h"
+#include "branch.h"
 
 using namespace std;
 
@@ -21,13 +22,13 @@ int main(int argc, char** argv) {
     if (strcmp(argv[1], "init") == 0) {
         init::do_init();
     } else if (strcmp(argv[1], "commit") == 0) {
-        if (argc < 2) {
+        if (argc < 3) {
             cerr << "Commit message not specified." << endl;
             return 0;
         }
         commit::do_commit(argv[2]);
     } else if (strcmp(argv[1], "checkout") == 0) {
-        if (argc < 2) {
+        if (argc < 3) {
             cerr << "Commit hash or branch name not specified." << endl;
             return 0;
         }
@@ -36,6 +37,12 @@ int main(int argc, char** argv) {
         status::do_status();
     } else if (strcmp(argv[1], "log") == 0) {
         log::do_log();
+    } else if (strcmp(argv[1], "branch") == 0) {
+        if (argc < 3) {
+            cerr << "Branch name not specified." << endl;
+            return 0;
+        }
+        branch::do_branch(argv[2]);
     } else {
         cerr << "RTFM" << endl;
         return 0;
