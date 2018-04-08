@@ -9,6 +9,7 @@
 #include "commit.h"
 #include "checkout.h"
 #include "status.h"
+#include "log.h"
 
 using namespace std;
 
@@ -33,6 +34,8 @@ int main(int argc, char** argv) {
         checkout::do_checkout(argv[2]);
     } else if (strcmp(argv[1], "status") == 0) {
         status::do_status();
+    } else if (strcmp(argv[1], "log") == 0) {
+        log::do_log();
     } else {
         cerr << "RTFM" << endl;
         return 0;
