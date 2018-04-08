@@ -14,8 +14,11 @@ void init::do_init() {
     utils::make_dir(".vno");
     utils::make_dir(".vno/commits");
     utils::make_dir(".vno/blobs");
+    utils::make_dir(".vno/branches");
     
     utils::write_to_file(".vno/head", "null");
+    utils::write_to_file(".vno/current_branch", "master");
+    utils::write_to_file(".vno/branches/master", "null");
     
     cout << "Init done" << endl;
 }

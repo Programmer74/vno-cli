@@ -43,5 +43,11 @@ void commit::do_commit(string commit_message) {
     //updating the last commit
     utils::write_to_file(".vno/head", commithash);
     
+    //get current branch name
+    string current_branch = utils::read_line_from_file(".vno/current_branch", 0);
+    cout << "Current branch : " << current_branch << endl;
+    //update the branch to point to our last commit
+    utils::write_to_file(".vno/branches/" + current_branch, commithash);
+    
     cout << "Commit done; hash : " << commithash << endl;
 }

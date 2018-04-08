@@ -135,6 +135,15 @@ int utils::write_to_file(string filename, string to_write) {
     return 0;
 }
 
+string utils::read_line_from_file(string filename, int line_no) {
+    ifstream file(filename);
+    string line;
+    for (int i = 0; i <= line_no; i++) {
+        getline(file, line);
+    }
+    return line;
+}
+
 void utils::print(string to_print) {
     if ((to_print[0] != '.') && (to_print[1] != '/')) {
         to_print = "./" + to_print;

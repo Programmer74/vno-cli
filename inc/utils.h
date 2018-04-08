@@ -16,6 +16,7 @@ public:
     static int rm_rf_files();
     static bool exists_file (std::string name);
     static int write_to_file(std::string filename, std::string to_write);
+    static std::string read_line_from_file(std::string filename, int line_no);
     
     static std::string hashfile(std::string filename);
     
