@@ -17,6 +17,7 @@ set(CLI_SOURCES
 )
 
 include_directories("${vno-cli_SOURCE_DIR}/inc")
+include_directories("${vno-cli_SOURCE_DIR}/rapidjson/include/rapidjson")
 
 include(FindPkgConfig)
 pkg_check_modules(CURLPP REQUIRED curlpp)
