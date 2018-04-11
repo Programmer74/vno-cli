@@ -17,6 +17,9 @@ set(CLI_SOURCES
 
 include_directories("${vno-cli_SOURCE_DIR}/inc")
 
+include(FindPkgConfig)
+pkg_check_modules(CURLPP REQUIRED curlpp)
+
 set(CMAKE_CXX_STANDARD 11)
 
 add_compile_options(
@@ -27,3 +30,4 @@ add_compile_options(
 )
 
 add_executable(vno-cli ${CLI_SOURCES})
+target_link_libraries(vno-cli curl curlpp)
