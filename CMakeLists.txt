@@ -13,6 +13,7 @@ set(CLI_SOURCES
     ${vno-cli_SOURCE_DIR}/src/log.cpp 
     ${vno-cli_SOURCE_DIR}/src/branch.cpp
 	${vno-cli_SOURCE_DIR}/src/rest.cpp
+	${vno-cli_SOURCE_DIR}/src/credentials.cpp
 )
 
 include_directories("${vno-cli_SOURCE_DIR}/inc")

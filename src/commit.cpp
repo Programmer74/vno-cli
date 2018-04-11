@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <ctime>
 
 #include "utils.h"
 #include "paths.h"
@@ -26,6 +27,13 @@ void commit::do_commit(string commit_message) {
     
     //storing the commit's message
     commitfile << commit_message << endl;
+    
+    //storing the commit's author
+    commitfile << utils::read_line_from_file(utils::home_dir + SETTINGS_FILE, 0) << endl;
+    
+    //storing the timestamp
+    std::time_t result = std::time(nullptr);
+    commitfile << result << endl;
     
     //copying files from tree to blob dir
     //storing working tree: 1st line for path, 2nd line for blob path

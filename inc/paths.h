@@ -4,6 +4,9 @@
 #define WORKING_DIR         "."
 #define REPO_DIR            "./.vno"
 
+#define SETTINGS_DIR        ".vno"
+#define SETTINGS_FILE       SETTINGS_DIR "/settings"
+
 #define LAST_COMMIT_ID_FILE REPO_DIR "/head"
 #define CUR_BRANCH_ID_FILE  REPO_DIR "/current_branch"
 #define TMP_COMMIT_FILE     REPO_DIR "/commits/tmpcommit"

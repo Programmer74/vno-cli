@@ -9,6 +9,8 @@
 class utils
 {
 public:
+    static std::string home_dir;
+    
     static int make_dir(std::string path);
     static int copy_file(std::string source, std::string dest);
     static int move_file(std::string source, std::string dest);

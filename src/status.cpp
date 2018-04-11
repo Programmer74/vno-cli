@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <ctime>
 
 #include "utils.h"
 #include "paths.h"
@@ -19,13 +20,21 @@ int status::do_status() {
 
     string last_commit_message;
     string last_commit_parent;
+    string last_commit_author;
+    string last_commit_timestamp;
+    
     ifstream last_commit_file(COMMITS_DIR + last_commit_hash);
     getline(last_commit_file, last_commit_parent); 
-    getline(last_commit_file, last_commit_message);  
+    getline(last_commit_file, last_commit_message); 
+    getline(last_commit_file, last_commit_author);
+    getline(last_commit_file, last_commit_timestamp); 
         
     cout << "Last commit:" << endl;
     cout << "\t" << last_commit_hash << endl;   
     cout << "\t" << last_commit_message << endl;
+    cout << "\tby @" << last_commit_author << endl;
+    std::time_t last_commit_time = atol(last_commit_timestamp.c_str());
+    cout << "\tat " << std::asctime(std::localtime(&last_commit_time));
 
     vector< pair<string, string> > orig_state;
     vector< pair<string, string> > current_state;

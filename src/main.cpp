@@ -12,6 +12,7 @@
 #include "log.h"
 #include "branch.h"
 #include "rest.h"
+#include "credentials.h"
 
 using namespace std;
 
@@ -20,6 +21,22 @@ int main(int argc, char** argv) {
         cerr << "RTFM" << endl;
         return 0;
     }
+    
+    utils::home_dir = getenv("HOME");
+    utils::home_dir += "/";
+    
+    if (strcmp(argv[1], "credentials") == 0) {
+        if (argc < 4) {
+            cerr << "Please specify <username> <password>" << endl;
+            return 0;
+        }
+        credentials::save_credentials(argv[2], argv[3]);
+        return 0;
+    } else if (!credentials::are_credentials_present()) {
+        cerr << "I don't know who you are. Please, do vno-cli credentials <username> <password>" << endl;
+        return 0;
+    }
+    
     if (strcmp(argv[1], "init") == 0) {
         init::do_init();
     } else if (strcmp(argv[1], "commit") == 0) {

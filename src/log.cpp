@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <ctime>
 
 #include "utils.h"
 #include "paths.h"
@@ -24,11 +25,20 @@ void log::do_log() {
     
         string parent_commit;
         string commit_message;
+        string author;
+        string timestamp;
         
         getline(commitfile, parent_commit);
         getline(commitfile, commit_message);
+        getline(commitfile, author);
+        getline(commitfile, timestamp);
+        std::time_t commit_time = atol(timestamp.c_str());
         
-        cout << "\t" << commit_hash << " : " << commit_message << endl;
+        cout << "commit " << commit_hash << endl;
+        cout << "Author: @" << author << endl;
+        cout << "Date:   " << std::asctime(std::localtime(&commit_time)) << endl;
+        
+        cout << "\t" << commit_message << endl << endl;
     
         commit_hash = parent_commit;
     }

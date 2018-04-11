@@ -22,6 +22,8 @@
 
 using namespace std;
 
+std::string utils::home_dir = "";
+
 int utils::make_dir(string path) {
     int res = mkdir(path.c_str(), ACCESSPERMS);
     if (res < 0) {

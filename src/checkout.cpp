@@ -25,9 +25,13 @@ void checkout_to_commit(string commit_hash) {
     string blob_path;
     string parent_commit;
     string commit_message;
+    string author;
+    string timestamp;
     
     getline(commitfile, parent_commit);
     getline(commitfile, commit_message);
+    getline(commitfile, author);
+    getline(commitfile, timestamp);
     while (getline(commitfile, line))
     {
         orig_path = line;
