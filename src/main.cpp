@@ -11,6 +11,7 @@
 #include "status.h"
 #include "log.h"
 #include "branch.h"
+#include "rest.h"
 
 using namespace std;
 
@@ -43,7 +44,13 @@ int main(int argc, char** argv) {
             return 0;
         }
         branch::do_branch(argv[2]);
-    } else {
+    } else if (strcmp(argv[1], "rest") == 0) {
+        if (argc < 3) {
+            cerr << "URL for rest not specified." << endl;
+            return 0;
+        }
+        rest::do_rest(argv[2]);
+    }else {
         cerr << "RTFM" << endl;
         return 0;
     }
