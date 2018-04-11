@@ -1,3 +1,4 @@
+CMakeLists.txt
 inc/branch.h
 inc/checkout.h
 inc/commit.h
@@ -17,5 +18,4 @@ src/utils.cpp
 src/utils.cpp
 utils.cpp
 utils.h
-Makefile
 src/main.cpp
