@@ -7,6 +7,7 @@
 
 #include "utils.h"
 #include "status.h"
+#include "paths.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ void checkout_to_commit(string commit_hash) {
     cout << "Working directory cleaned" << endl;
     
     ifstream commitfile;
-    commitfile.open(".vno/commits/" + commit_hash);
+    commitfile.open(COMMITS_DIR + commit_hash);
 
     string line;
     string orig_path;
@@ -31,7 +32,7 @@ void checkout_to_commit(string commit_hash) {
     {
         orig_path = line;
         getline(commitfile, line);
-        blob_path = ".vno/blobs/" + line;
+        blob_path = BLOBS_DIR + line;
         //generate dir if required
         for (int i = orig_path.size() - 1; i > 2; i--) {
             if (orig_path[i] == '/') {
@@ -51,7 +52,7 @@ void checkout_to_commit(string commit_hash) {
     cout << "Parent commit: " << parent_commit << endl;
     
     //updating to this commit
-    utils::write_to_file(".vno/head", commit_hash);
+    utils::write_to_file(LAST_COMMIT_ID_FILE, commit_hash);
 }
 
 void checkout::do_checkout(string checkout_to) {
@@ -62,13 +63,13 @@ void checkout::do_checkout(string checkout_to) {
         return;
     }
     
-    if (utils::exists_file(".vno/commits/" + checkout_to)) {
+    if (utils::exists_file(COMMITS_DIR + checkout_to)) {
         checkout_to_commit(checkout_to);
         return;
     }
     
-    if (utils::exists_file(".vno/branches/" + checkout_to)) {
-        string commit_hash = utils::read_line_from_file(".vno/branches/" + checkout_to, 0);
+    if (utils::exists_file(BRANCHES_DIR + checkout_to)) {
+        string commit_hash = utils::read_line_from_file(BRANCHES_DIR + checkout_to, 0);
         checkout_to_commit(commit_hash);
         return;
     }

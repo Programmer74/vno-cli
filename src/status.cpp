@@ -6,6 +6,7 @@
 #include <fstream>
 
 #include "utils.h"
+#include "paths.h"
 
 using namespace std;
 
@@ -13,12 +14,12 @@ int status::do_status() {
     cout << "Status called" << endl;
 
     string last_commit_hash;
-    ifstream headfile(".vno/head");
+    ifstream headfile(LAST_COMMIT_ID_FILE);
     getline(headfile, last_commit_hash);
 
     string last_commit_message;
     string last_commit_parent;
-    ifstream last_commit_file(".vno/commits/" + last_commit_hash);
+    ifstream last_commit_file(COMMITS_DIR + last_commit_hash);
     getline(last_commit_file, last_commit_parent); 
     getline(last_commit_file, last_commit_message);  
         

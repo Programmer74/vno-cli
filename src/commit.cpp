@@ -6,6 +6,7 @@
 #include <fstream>
 
 #include "utils.h"
+#include "paths.h"
 
 using namespace std;
 
@@ -13,11 +14,11 @@ void commit::do_commit(string commit_message) {
     cout << "Commit called" << endl;
     
     ofstream commitfile;
-    string commitfile_path = ".vno/commits/tmpcommit";
+    string commitfile_path = TMP_COMMIT_FILE;
     commitfile.open(commitfile_path);
         
     string parent;
-    ifstream parentcfile(".vno/head");
+    ifstream parentcfile(LAST_COMMIT_ID_FILE);
     getline(parentcfile, parent);
     
     //storing the new commit's parent commit hash
@@ -28,26 +29,26 @@ void commit::do_commit(string commit_message) {
     
     //copying files from tree to blob dir
     //storing working tree: 1st line for path, 2nd line for blob path
-    vector<string> fnames = utils::parse_file_tree(".");
+    vector<string> fnames = utils::parse_file_tree(WORKING_DIR);
     for (string fname : fnames) {
         std::string hash = utils::hashfile(fname);
         cout << fname << " : " << hash << endl;
-        utils::copy_file(fname, ".vno/blobs/" + hash);
+        utils::copy_file(fname, BLOBS_DIR + hash);
         commitfile << fname << endl;
         commitfile << hash << endl;
     }
     commitfile.close();
     std::string commithash = utils::hashfile(commitfile_path);
-    utils::move_file(commitfile_path, ".vno/commits/" + commithash);
+    utils::move_file(commitfile_path, COMMITS_DIR + commithash);
     
     //updating the last commit
-    utils::write_to_file(".vno/head", commithash);
+    utils::write_to_file(LAST_COMMIT_ID_FILE, commithash);
     
     //get current branch name
-    string current_branch = utils::read_line_from_file(".vno/current_branch", 0);
+    string current_branch = utils::read_line_from_file(CUR_BRANCH_ID_FILE, 0);
     cout << "Current branch : " << current_branch << endl;
     //update the branch to point to our last commit
-    utils::write_to_file(".vno/branches/" + current_branch, commithash);
+    utils::write_to_file(BRANCHES_DIR + current_branch, commithash);
     
     cout << "Commit done; hash : " << commithash << endl;
 }

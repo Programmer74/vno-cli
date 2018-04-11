@@ -6,6 +6,7 @@
 #include <fstream>
 
 #include "utils.h"
+#include "paths.h"
 
 using namespace std;
 
@@ -13,13 +14,13 @@ void log::do_log() {
     cout << "Log called" << endl;
     
     string commit_hash;
-    ifstream current_commit_file(".vno/head");
+    ifstream current_commit_file(LAST_COMMIT_ID_FILE);
     getline(current_commit_file, commit_hash);
     
     
     while (commit_hash != "null") {
         ifstream commitfile;
-        commitfile.open(".vno/commits/" + commit_hash);
+        commitfile.open(COMMITS_DIR + commit_hash);
     
         string parent_commit;
         string commit_message;
