@@ -214,6 +214,9 @@ Document utils::do_initial_get_request(string url, string username, string passw
         
         *response_code = curlpp::infos::ResponseCode::get(myRequest);
         
+        //cout << "GET " << url << endl;
+        //cout << *response_code << " : " << result.str() << endl;
+        
         Document document;
         document.Parse(result.str().c_str());
         return document;
@@ -282,20 +285,26 @@ string utils::get_userstuff_by_user_id(int id) {
     }
     
     int errcode = -1;
-    Document d = do_get_request("/user/get?id=" + to_string(id), &errcode);
+    Document d = do_get_request("/user/" + to_string(id), &errcode);
+    string s = "";
     
-    assert(d.HasMember("firstname"));
-    assert(d["firstname"].IsString());
-    
-    assert(d.HasMember("lastname"));
-    assert(d["lastname"].IsString());
-    
-    assert(d.HasMember("email"));
-    assert(d["email"].IsString());
-    
-    string s = string(d["firstname"].GetString())
-             + " " + string(d["lastname"].GetString())
-             + " <" + string(d["email"].GetString()) + ">";
-    usernames_by_id.insert(pair<int, string>(id, s));
+    if (errcode == 200) {
+        assert(d.HasMember("firstname"));
+        assert(d["firstname"].IsString());
+        
+        assert(d.HasMember("lastname"));
+        assert(d["lastname"].IsString());
+        
+        assert(d.HasMember("email"));
+        assert(d["email"].IsString());
+        
+        s = string(d["firstname"].GetString())
+                 + " " + string(d["lastname"].GetString())
+                 + " <" + string(d["email"].GetString()) + ">";
+        usernames_by_id.insert(pair<int, string>(id, s));
+    } else {
+        s = "<some user with id = " + to_string(id) + ">";
+        usernames_by_id.insert(pair<int, string>(id, s));
+    }
     return s;
 }

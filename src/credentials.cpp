@@ -28,7 +28,7 @@ bool credentials::save_credentials(string username, string password) {
     int id = -1;
     int errcode = -1;
     
-    Document d = utils::do_initial_get_request("/user/get", username, password, &errcode);
+    Document d = utils::do_initial_get_request("/user/me/", username, password, &errcode);
     if (errcode != 200) {
         if (d.HasMember("error")) {
             cerr << "Error occured: " << errcode << endl;
