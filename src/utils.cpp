@@ -20,7 +20,18 @@
 #include <string>
 #include <ctime>
 
+#include <curlpp/cURLpp.hpp>
+#include <curlpp/Easy.hpp>
+#include <curlpp/Options.hpp>
+#include <curlpp/Exception.hpp>
+#include <curlpp/Infos.hpp>
+
+#include "document.h"
+#include "paths.h"
+
 using namespace std;
+using namespace curlpp::options;
+using namespace rapidjson;
 
 std::string utils::home_dir = "";
 
@@ -171,4 +182,64 @@ vector<string> utils::parse_file_tree(string pat){
     }
     globfree(&glob_result);
     return ret;
+}
+
+Document utils::do_initial_get_request(string url, string username, string password, int* response_code) {
+    try
+    {
+        string addr = SRV_ADDRESS;
+        url = addr + url;
+    
+        // That's all that is needed to do cleanup of used resources (RAII style).
+        curlpp::Cleanup myCleanup;
+        
+        // Our request to be sent.
+        curlpp::Easy myRequest;
+        
+        // Set the URL.
+        myRequest.setOpt<Url>(url);
+        
+        // Set where to write answer to
+        std::stringstream result;
+        myRequest.setOpt(cURLpp::Options::WriteStream(&result));
+        
+        // Set username/password
+        myRequest.setOpt(new curlpp::options::UserPwd(username + ":" + password));
+        
+        // Send request and get a result.
+        // By default the result goes to standard output.
+        myRequest.perform();
+        
+        *response_code = curlpp::infos::ResponseCode::get(myRequest);
+        
+        Document document;
+        document.Parse(result.str().c_str());
+        return document;
+    }
+    
+    catch(curlpp::RuntimeError & e)
+    {
+        std::cout << e.what() << std::endl;
+        *response_code = -2;
+        return nullptr;
+    }
+    
+    catch(curlpp::LogicError & e)
+    {
+        std::cout << e.what() << std::endl;
+        *response_code = -3;
+        return nullptr;
+    }
+
+}
+
+string gusername = "";
+string gpassword = "";
+Document utils::do_get_request(string url, int* response_code) {
+    if (gusername == "") {
+        gusername = read_line_from_file(home_dir + SETTINGS_FILE, 1);
+        gpassword = read_line_from_file(home_dir + SETTINGS_FILE, 2);
+    }
+    cout << gusername << " : " << gpassword << endl;
+    return do_initial_get_request(url, gusername, gpassword, response_code);
 }

@@ -15,6 +15,6 @@
 #define COMMITS_DIR         REPO_DIR "/commits/"
 #define BLOBS_DIR           REPO_DIR "/blobs/"
 
-
+#define SRV_ADDRESS         "localhost:8080"
 
 #endif // PATHS_H

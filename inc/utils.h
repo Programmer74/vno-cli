@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include "document.h"
 
 class utils
 {
@@ -25,6 +26,9 @@ public:
     static void print(std::string to_print);
 
     static std::vector<std::string> parse_file_tree(std::string pat);
+    
+    static rapidjson::Document do_initial_get_request(std::string url, std::string username, std::string password, int* response_code);
+    static rapidjson::Document do_get_request(std::string url, int* response_code);
 };
 
 #endif // UTILS_H
