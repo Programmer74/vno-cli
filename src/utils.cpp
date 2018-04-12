@@ -19,12 +19,14 @@
 #include <unistd.h>
 #include <string>
 #include <ctime>
+#include <list>
 
 #include <curlpp/cURLpp.hpp>
 #include <curlpp/Easy.hpp>
 #include <curlpp/Options.hpp>
 #include <curlpp/Exception.hpp>
 #include <curlpp/Infos.hpp>
+#include <curlpp/Types.hpp>
 
 #include "document.h"
 #include "paths.h"
@@ -241,6 +243,34 @@ Document utils::do_get_request(string url, int* response_code) {
         gpassword = read_line_from_file(home_dir + SETTINGS_FILE, 2);
     }
     return do_initial_get_request(url, gusername, gpassword, response_code);
+}
+
+string utils::do_put_request(string url, string body, int* response_code) {
+    //std::list<std::string> header;
+    //header.push_back("Content-Type: application/json");
+    
+    if (gusername == "") {
+        gusername = read_line_from_file(home_dir + SETTINGS_FILE, 1);
+        gpassword = read_line_from_file(home_dir + SETTINGS_FILE, 2);
+    }
+    
+    curlpp::Cleanup clean;
+    curlpp::Easy r;
+    r.setOpt(new curlpp::options::Url(url));
+    //r.setOpt(new curlpp::options::HttpHeader(header));
+    r.setOpt(new curlpp::options::PostFields(body));
+    r.setOpt(new curlpp::options::PostFieldSize(body.length()));
+    
+    r.setOpt(new curlpp::options::UserPwd(gusername + ":" + gpassword));
+    
+    std::ostringstream response;
+    r.setOpt(new curlpp::options::WriteStream(&response));
+    
+    r.perform();
+    
+    *response_code = curlpp::infos::ResponseCode::get(r);
+    
+    return std::string(response.str());
 }
 
 std::map<int, std::string> usernames_by_id;
