@@ -240,7 +240,6 @@ Document utils::do_get_request(string url, int* response_code) {
         gusername = read_line_from_file(home_dir + SETTINGS_FILE, 1);
         gpassword = read_line_from_file(home_dir + SETTINGS_FILE, 2);
     }
-    cout << gusername << " : " << gpassword << endl;
     return do_initial_get_request(url, gusername, gpassword, response_code);
 }
 
