@@ -29,6 +29,8 @@ public:
     
     static rapidjson::Document do_initial_get_request(std::string url, std::string username, std::string password, int* response_code);
     static rapidjson::Document do_get_request(std::string url, int* response_code);
+    
+    static std::string get_userstuff_by_user_id(int id);
 };
 
 #endif // UTILS_H

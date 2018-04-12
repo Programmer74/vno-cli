@@ -243,3 +243,30 @@ Document utils::do_get_request(string url, int* response_code) {
     cout << gusername << " : " << gpassword << endl;
     return do_initial_get_request(url, gusername, gpassword, response_code);
 }
+
+std::map<int, std::string> usernames_by_id;
+std::map<int, std::string>::iterator usernames_by_id_it;
+string utils::get_userstuff_by_user_id(int id) {
+    usernames_by_id_it = usernames_by_id.find(id);
+    if (usernames_by_id_it != usernames_by_id.end()) {
+        return usernames_by_id_it->second;
+    }
+    
+    int errcode = -1;
+    Document d = do_get_request("/user/get?id=" + to_string(id), &errcode);
+    
+    assert(d.HasMember("firstname"));
+    assert(d["firstname"].IsString());
+    
+    assert(d.HasMember("lastname"));
+    assert(d["lastname"].IsString());
+    
+    assert(d.HasMember("email"));
+    assert(d["email"].IsString());
+    
+    string s = string(d["firstname"].GetString())
+             + " " + string(d["lastname"].GetString())
+             + " <" + string(d["email"].GetString()) + ">";
+    usernames_by_id.insert(pair<int, string>(id, s));
+    return s;
+}

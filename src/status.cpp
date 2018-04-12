@@ -28,11 +28,14 @@ int status::do_status() {
     getline(last_commit_file, last_commit_message); 
     getline(last_commit_file, last_commit_author);
     getline(last_commit_file, last_commit_timestamp); 
+       
+    int author_id = atoi(last_commit_author.c_str());    
+    last_commit_author = utils::get_userstuff_by_user_id(author_id);
         
     cout << "Last commit:" << endl;
     cout << "\t" << last_commit_hash << endl;   
     cout << "\t" << last_commit_message << endl;
-    cout << "\tby @" << last_commit_author << endl;
+    cout << "\tby " << last_commit_author << endl;
     std::time_t last_commit_time = atol(last_commit_timestamp.c_str());
     cout << "\tat " << std::asctime(std::localtime(&last_commit_time));
 

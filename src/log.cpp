@@ -33,9 +33,12 @@ void log::do_log() {
         getline(commitfile, author);
         getline(commitfile, timestamp);
         std::time_t commit_time = atol(timestamp.c_str());
+        int author_id = atoi(author.c_str());
+        
+        author = utils::get_userstuff_by_user_id(author_id);
         
         cout << "commit " << commit_hash << endl;
-        cout << "Author: @" << author << endl;
+        cout << "Author: " << author << endl;
         cout << "Date:   " << std::asctime(std::localtime(&commit_time)) << endl;
         
         cout << "\t" << commit_message << endl << endl;
