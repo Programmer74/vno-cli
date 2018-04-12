@@ -8,11 +8,17 @@
 
 #include "utils.h"
 #include "paths.h"
+#include "status.h"
 
 using namespace std;
 
 void commit::do_commit(string commit_message) {
     cout << "Commit called" << endl;
+    
+    if (status::do_status() == 0) {
+        cerr << "Nothing to commit, working directory clean." << endl;
+        return;
+    }
     
     ofstream commitfile;
     string commitfile_path = TMP_COMMIT_FILE;
