@@ -12,6 +12,7 @@
 #include "paths.h"
 
 #include "document.h"
+#include "commit.h"
 
 using namespace std;
 using namespace rapidjson;
@@ -85,39 +86,13 @@ void checkout_to_commit(string commit_hash) {
         utils::base64_decode_file(orig_path, based64_file);
     }
     
+    //do dummy checkout for vno-cli status being fine
+    commit::do_dummy_commit_locally(this_commit_id);
+    
     cout << "Checkout done." << endl;
     
-    /*return ss.str();
-    
-    getline(commitfile, parent_commit);
-    getline(commitfile, commit_message);
-    getline(commitfile, author);
-    getline(commitfile, timestamp);
-    while (getline(commitfile, line))
-    {
-        orig_path = line;
-        getline(commitfile, line);
-        blob_path = BLOBS_DIR + line;
-        //generate dir if required
-        for (int i = orig_path.size() - 1; i > 2; i--) {
-            if (orig_path[i] == '/') {
-                string dir_path = orig_path.substr(0, i);
-                cout << "Making directory " << dir_path << endl;
-                utils::make_dir(dir_path);
-            }
-        }
-        //copy file from blobs to working dir
-        std::cout << "Copying " << blob_path << " to " << orig_path << endl;
-        utils::copy_file(blob_path, orig_path);
-    }
-    
-    commitfile.close();
-    cout << "Checkout to " << commit_hash << " done." << endl;
-    cout << "Message: " << commit_message << endl;
-    cout << "Parent commit: " << parent_commit << endl;
-    
     //updating to this commit
-    utils::write_to_file(LAST_COMMIT_ID_FILE, commit_hash);*/
+    utils::write_to_file(LAST_COMMIT_ID_FILE, commit_hash);
 }
 
 void checkout::do_checkout(string checkout_to) {

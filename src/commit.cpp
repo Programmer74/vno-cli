@@ -130,3 +130,38 @@ void commit::do_commit(string commit_message) {
         cerr << "Message : " << ans << endl;
 	}
 }
+
+void commit::do_dummy_commit_locally(int commit_id) {
+
+    ofstream commitfile;
+    string commitfile_path = TMP_COMMIT_FILE;
+    commitfile.open(commitfile_path);
+   
+    string parent;
+    ifstream parentcfile(LAST_COMMIT_ID_FILE);
+    getline(parentcfile, parent);
+    
+    //storing the new commit's parent commit hash
+    commitfile << "" << endl;
+    
+    //storing the commit's message
+    commitfile << "" << endl;
+
+    //storing the commit's author	
+    commitfile << "" << endl;
+    
+    //storing the timestamp
+    commitfile << "" << endl;
+        
+    vector<string> fnames = utils::parse_file_tree(WORKING_DIR);
+    for (string fname : fnames) {
+        std::string hash = utils::hashfile(fname);
+        //cout << fname << " : " << hash << endl;
+        utils::copy_file(fname, BLOBS_DIR + hash);
+        commitfile << fname << endl;
+        commitfile << hash << endl;
+    }
+        
+    commitfile.close();
+    utils::move_file(commitfile_path, COMMITS_DIR + to_string(commit_id));
+}
