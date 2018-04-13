@@ -9,6 +9,7 @@ class log
 {
 public:
     static void do_log();
+    static std::string generate_message_for_commit(std::string commit_hash, std::string* prev_commit_hash);
 };
 
 #endif // COMMIT_H
