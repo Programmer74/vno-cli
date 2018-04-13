@@ -28,6 +28,10 @@
 #include <curlpp/Infos.hpp>
 #include <curlpp/Types.hpp>
 
+#define BUFFERSIZE 16
+#include <base64/encode.h>
+#include <base64/decode.h>
+
 #include "document.h"
 #include "paths.h"
 
@@ -120,6 +124,23 @@ string utils::hashfile(string filename)
     ss << buffer;*/
 
     return ss.str();
+}
+
+string utils::base64_encode_file(string filename) {
+    base64::encoder E;
+    fstream f(filename);
+    stringstream s;
+    E.encode(f, s);
+    return s.str();
+}
+
+bool utils::base64_decode_file(string filename, string decoded_string) {
+    base64::encoder E;
+    fstream f(filename);
+    stringstream s;
+    s << decoded_string;
+    E.encode(s, f);
+    return true;
 }
 
 int utils::move_file(string source, string dest) {

@@ -22,6 +22,8 @@ public:
     static std::string read_line_from_file(std::string filename, int line_no);
     
     static std::string hashfile(std::string filename);
+    static std::string base64_encode_file(std::string filename);
+    static bool base64_decode_file(std::string filename, std::string decoded_string);
     
     static void print(std::string to_print);
 
