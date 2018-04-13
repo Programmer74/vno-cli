@@ -35,6 +35,8 @@ void commit::do_commit(string commit_message) {
 	document.SetObject();
 	// must pass an allocator when the object may need to allocate memory
 	rapidjson::Document::AllocatorType& allocator = document.GetAllocator();
+    
+    rapidjson::Value cobj(rapidjson::kObjectType);
         
     string parent;
     ifstream parentcfile(LAST_COMMIT_ID_FILE);
@@ -42,24 +44,24 @@ void commit::do_commit(string commit_message) {
     
     //storing the new commit's parent commit hash
     commitfile << parent << endl;
-    document.AddMember(rapidjson::Value("parent_commit_id", allocator), rapidjson::Value(parent.c_str(), allocator), allocator);
+    
+    rapidjson::Value parent_ids_array(rapidjson::kArrayType);
+    parent_ids_array.PushBack(rapidjson::Value(1), allocator);
+    cobj.AddMember(rapidjson::Value("parent_ids", allocator), parent_ids_array, allocator);   
     
     //storing the commit's message
     commitfile << commit_message << endl;
-    document.AddMember(rapidjson::Value("commit_message", allocator), rapidjson::Value(commit_message.c_str(), allocator), allocator);
-    
-    //storing the commit's author
-    string commit_author = utils::read_line_from_file(utils::home_dir + SETTINGS_FILE, 0);
-    commitfile << commit_author << endl;
-    document.AddMember(rapidjson::Value("author_id", allocator), rapidjson::Value(commit_author.c_str(), allocator), allocator);
+    cobj.AddMember(rapidjson::Value("message", allocator), rapidjson::Value(commit_message.c_str(), allocator), allocator);
     
     //storing the timestamp
     std::time_t result = std::time(nullptr);
     commitfile << result << endl;
-    document.AddMember(rapidjson::Value("timestamp", allocator), rapidjson::Value(to_string(result).c_str(), allocator), allocator);
+    cobj.AddMember(rapidjson::Value("timestamp", allocator), rapidjson::Value(result), allocator);
+    
+    document.AddMember(rapidjson::Value("commit", allocator), cobj, allocator);
     
     //setup the array for json
-    rapidjson::Value array(rapidjson::kArrayType);\
+    rapidjson::Value array(rapidjson::kArrayType);
     
     //copying files from tree to blob dir
     //storing working tree: 1st line for path, 2nd line for blob path
@@ -72,27 +74,29 @@ void commit::do_commit(string commit_message) {
         commitfile << fname << endl;
         commitfile << hash << endl;
         
-        rapidjson::Value cobj(rapidjson::kObjectType);
-        cobj.AddMember(rapidjson::Value("full_path", allocator), rapidjson::Value(fname.c_str(), allocator), allocator);
-        cobj.AddMember(rapidjson::Value("blob_id", allocator), rapidjson::Value(hash.c_str(), allocator), allocator);
+        rapidjson::Value bobj(rapidjson::kObjectType);
+        bobj.AddMember(rapidjson::Value("name", allocator), rapidjson::Value(fname.c_str(), allocator), allocator);
+        bobj.AddMember(rapidjson::Value("mode", allocator), rapidjson::Value(0), allocator);
+        string b64 = utils::base64_encode_file(fname);
+        bobj.AddMember(rapidjson::Value("content", allocator), rapidjson::Value(b64.c_str(), allocator), allocator);
     
-        array.PushBack(cobj, allocator);
+        array.PushBack(bobj, allocator);
     }
     
-    document.AddMember(rapidjson::Value("working_tree", allocator), array, allocator);
+    document.AddMember(rapidjson::Value("blobs", allocator), array, allocator);
     
     commitfile.close();
     std::string commithash = utils::hashfile(commitfile_path);
     utils::move_file(commitfile_path, COMMITS_DIR + commithash);
     
     //updating the last commit
-    utils::write_to_file(LAST_COMMIT_ID_FILE, commithash);
+    //utils::write_to_file(LAST_COMMIT_ID_FILE, commithash);
     
     //get current branch name
     string current_branch = utils::read_line_from_file(CUR_BRANCH_ID_FILE, 0);
     cout << "Current branch : " << current_branch << endl;
     //update the branch to point to our last commit
-    utils::write_to_file(BRANCHES_DIR + current_branch, commithash);
+    //utils::write_to_file(BRANCHES_DIR + current_branch, commithash);
     
     cout << "Commit done; hash : " << commithash << endl;
     cout << "JSON:" << endl;
@@ -101,4 +105,9 @@ void commit::do_commit(string commit_message) {
 	document.Accept(writer);
 
 	std::cout << strbuf.GetString() << std::endl;
+	
+	int errcode = -1;
+	string ans = utils::do_put_request("/r/1/1/", strbuf.GetString(), &errcode);
+	cout << "errcode : " << errcode << endl;
+	cout << "ans : " << ans << endl;
 }

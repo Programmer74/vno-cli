@@ -30,7 +30,6 @@ add_compile_options(
         -c
         -Wall
         -std=c++11
-        -D_GLIBCXX_USE_CXX11_ABI=0
 )
 
 add_executable(vno-cli ${CLI_SOURCES})

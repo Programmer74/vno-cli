@@ -131,7 +131,9 @@ string utils::base64_encode_file(string filename) {
     fstream f(filename);
     stringstream s;
     E.encode(f, s);
-    return s.str();
+    string str = s.str();
+    str.pop_back(); //no \n
+    return str;
 }
 
 bool utils::base64_decode_file(string filename, string decoded_string) {
@@ -270,8 +272,9 @@ Document utils::do_get_request(string url, int* response_code) {
 }
 
 string utils::do_put_request(string url, string body, int* response_code) {
-    //std::list<std::string> header;
-    //header.push_back("Content-Type: application/json");
+    std::list<std::string> header;
+    string srv = SRV_ADDRESS;
+    header.push_back("Content-Type: application/json");
     
     if (gusername == "") {
         gusername = read_line_from_file(home_dir + SETTINGS_FILE, 1);
@@ -280,8 +283,11 @@ string utils::do_put_request(string url, string body, int* response_code) {
     
     curlpp::Cleanup clean;
     curlpp::Easy r;
-    r.setOpt(new curlpp::options::Url(url));
-    //r.setOpt(new curlpp::options::HttpHeader(header));
+    r.setOpt(new curlpp::options::Url(srv + url));
+    r.setOpt(new curlpp::options::HttpHeader(header));
+    
+    r.setOpt(new curlpp::options::CustomRequest{"PUT"});
+    
     r.setOpt(new curlpp::options::PostFields(body));
     r.setOpt(new curlpp::options::PostFieldSize(body.length()));
     
