@@ -17,8 +17,10 @@ using namespace rapidjson;
 
 string log::generate_message_for_commit(string commit_id, string* prev_commit_hash) {
    
+    utils::repo_id = utils::read_line_from_file(REPO_ID_FILE, 0);
+   
     int errcode = -1;
-    Document d = utils::do_get_request("/r/1/1/" + commit_id + "/", &errcode);
+    Document d = utils::do_get_request("/r/" + utils::repo_id + "/1/" + commit_id + "/", &errcode);
     string s = "";
     
     if (errcode == 200) {

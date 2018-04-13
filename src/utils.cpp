@@ -40,6 +40,7 @@ using namespace curlpp::options;
 using namespace rapidjson;
 
 std::string utils::home_dir = "";
+std::string utils::repo_id = "";
 
 int utils::make_dir(string path) {
     int res = mkdir(path.c_str(), ACCESSPERMS);

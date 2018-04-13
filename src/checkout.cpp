@@ -26,8 +26,10 @@ void checkout_to_commit(string commit_hash) {
     string orig_path;
     string parent_commit;
 
+    utils::repo_id = utils::read_line_from_file(REPO_ID_FILE, 0);
+    
     int errcode = -1;
-    Document d = utils::do_get_request("/r/full/1/1/" + commit_hash + "/", &errcode);
+    Document d = utils::do_get_request("/r/full/" + utils::repo_id + "/1/" + commit_hash + "/", &errcode);
     string s = "";
     
     if (errcode != 200) {
