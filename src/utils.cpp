@@ -137,11 +137,12 @@ string utils::base64_encode_file(string filename) {
 }
 
 bool utils::base64_decode_file(string filename, string decoded_string) {
-    base64::encoder E;
-    fstream f(filename);
+    base64::decoder E;
+    ofstream f(filename);
     stringstream s;
     s << decoded_string;
-    E.encode(s, f);
+    E.decode(s, f);
+    f.close();
     return true;
 }
 
@@ -237,8 +238,10 @@ Document utils::do_initial_get_request(string url, string username, string passw
         
         *response_code = curlpp::infos::ResponseCode::get(myRequest);
         
-        //cout << "GET " << url << endl;
-        //cout << *response_code << " : " << result.str() << endl;
+        //if (*response_code != 200) {
+            cout << "GET " << url << endl;
+            cerr << "ERROR " << *response_code << " : " << result.str() << endl;
+        //}
         
         Document document;
         document.Parse(result.str().c_str());
