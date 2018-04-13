@@ -53,6 +53,10 @@ void commit::do_commit(string commit_message) {
     commitfile << commit_message << endl;
     cobj.AddMember(rapidjson::Value("message", allocator), rapidjson::Value(commit_message.c_str(), allocator), allocator);
     
+    //storing the commit's author	
+    string commit_author = utils::read_line_from_file(utils::home_dir + SETTINGS_FILE, 0);	
+    commitfile << commit_author << endl;
+    
     //storing the timestamp
     std::time_t result = std::time(nullptr);
     commitfile << result << endl;
@@ -89,16 +93,6 @@ void commit::do_commit(string commit_message) {
     std::string commithash = utils::hashfile(commitfile_path);
     utils::move_file(commitfile_path, COMMITS_DIR + commithash);
     
-    //updating the last commit
-    //utils::write_to_file(LAST_COMMIT_ID_FILE, commithash);
-    
-    //get current branch name
-    string current_branch = utils::read_line_from_file(CUR_BRANCH_ID_FILE, 0);
-    cout << "Current branch : " << current_branch << endl;
-    //update the branch to point to our last commit
-    //utils::write_to_file(BRANCHES_DIR + current_branch, commithash);
-    
-    cout << "Commit done; hash : " << commithash << endl;
     cout << "JSON:" << endl;
     StringBuffer strbuf;
 	Writer<StringBuffer> writer(strbuf);
@@ -108,6 +102,31 @@ void commit::do_commit(string commit_message) {
 	
 	int errcode = -1;
 	string ans = utils::do_put_request("/r/1/1/", strbuf.GetString(), &errcode);
-	cout << "errcode : " << errcode << endl;
-	cout << "ans : " << ans << endl;
+
+	if (errcode == 200) {
+	
+        cout << "OK; answer : " << ans << endl;
+	
+        Document jans;
+        jans.Parse(ans.c_str());
+        
+        assert(jans.HasMember("id"));
+        assert(jans["id"].IsInt());
+	
+        int cid = jans["id"].GetInt();
+	
+        //updating the last commit
+        utils::write_to_file(LAST_COMMIT_ID_FILE, to_string(cid));
+        
+        //get current branch name
+        string current_branch = utils::read_line_from_file(CUR_BRANCH_ID_FILE, 0);
+        cout << "Current branch : " << current_branch << endl;
+        //update the !!LOCAL!! branch to point to our last commit
+        utils::write_to_file(BRANCHES_DIR + current_branch, to_string(cid));
+        
+        cout << "Commit done; id : " << cid << endl;
+	} else {   	
+        cerr << "Error code : " << errcode << endl;
+        cerr << "Message : " << ans << endl;
+	}
 }
