@@ -8,6 +8,7 @@
 
 #include "utils.h"
 #include "paths.h"
+#include "log.h"
 
 using namespace std;
 
@@ -18,26 +19,16 @@ int status::do_status() {
     ifstream headfile(LAST_COMMIT_ID_FILE);
     getline(headfile, last_commit_hash);
 
-    string last_commit_message;
-    string last_commit_parent;
-    string last_commit_author;
-    string last_commit_timestamp;
+    string tmp;
     
     ifstream last_commit_file(COMMITS_DIR + last_commit_hash);
-    getline(last_commit_file, last_commit_parent); 
-    getline(last_commit_file, last_commit_message); 
-    getline(last_commit_file, last_commit_author);
-    getline(last_commit_file, last_commit_timestamp); 
-       
-    int author_id = atoi(last_commit_author.c_str());    
-    last_commit_author = utils::get_userstuff_by_user_id(author_id);
-        
-    cout << "Last commit:" << endl;
-    cout << "\t" << last_commit_hash << endl;   
-    cout << "\t" << last_commit_message << endl;
-    cout << "\tby " << last_commit_author << endl;
-    std::time_t last_commit_time = atol(last_commit_timestamp.c_str());
-    cout << "\tat " << std::asctime(std::localtime(&last_commit_time));
+    //skip first four lines
+    for (int i = 0; i < 4; i++) {
+        getline(last_commit_file, tmp);
+    }
+    
+    //output fancy status
+    cout << "Previous " << log::generate_message_for_commit(last_commit_hash, &tmp);
 
     vector< pair<string, string> > orig_state;
     vector< pair<string, string> > current_state;
