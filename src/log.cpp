@@ -10,37 +10,59 @@
 #include "utils.h"
 #include "paths.h"
 
-using namespace std;
+#include "document.h"
 
-string log::generate_message_for_commit(string commit_hash, string* prev_commit_hash) {
+using namespace std;
+using namespace rapidjson;
+
+string log::generate_message_for_commit(string commit_id, string* prev_commit_hash) {
+   
+    int errcode = -1;
+    Document d = utils::do_get_request("/r/1/1/" + commit_id + "/", &errcode);
+    string s = "";
     
-    ifstream commitfile;
-    commitfile.open(COMMITS_DIR + commit_hash);
+    if (errcode == 200) {
     
-    string parent_commit;
-    string commit_message;
-    string author;
-    string timestamp;
+        assert(d.HasMember("revision"));
+        assert(d["revision"].IsInt());
+        
+        assert(d.HasMember("parentIds"));
+        
+        const Value& a = d["parentIds"];
+        assert(a.IsArray());
+        int prev_commit_id = a[0].GetInt();
+        
+        assert(d.HasMember("authorId"));
+        assert(d["authorId"].IsInt());
+        int author_id = d["authorId"].GetInt();
+        
+        assert(d.HasMember("message"));
+        assert(d["message"].IsString());
+        string commit_message = d["message"].GetString();
+        
+        assert(d.HasMember("timestamp"));
+        assert(d["timestamp"].IsInt64());
+        time_t commit_time = d["timestamp"].GetInt64();
+        
+        string author;
     
-    getline(commitfile, parent_commit);
-    *prev_commit_hash = parent_commit;
-    getline(commitfile, commit_message);
-    getline(commitfile, author);
-    getline(commitfile, timestamp);
-    std::time_t commit_time = atol(timestamp.c_str());
-    int author_id = atoi(author.c_str());
-    
-    author = utils::get_userstuff_by_user_id(author_id);
-    
-    stringstream ss;
-    
-    ss << "commit " << commit_hash << endl;
-    ss << "Author: " << author << endl;
-    ss << "Date:   " << std::asctime(std::localtime(&commit_time)) << endl;
-    
-    ss << "\t" << commit_message << endl << endl;
-    
-    return ss.str();
+        *prev_commit_hash = to_string(prev_commit_id);
+        author = utils::get_userstuff_by_user_id(author_id);
+        
+        stringstream ss;
+        
+        ss << "commit " << commit_id << endl;
+        ss << "Author: " << author << endl;
+        ss << "Date:   " << std::asctime(std::localtime(&commit_time)) << endl;
+        
+        ss << "\t" << commit_message << endl << endl;
+        
+        return ss.str();
+    } else {
+        s = "<some commit with id = " + commit_id + ">";
+        cerr << "Error code " << errcode << " while retreiving info about commit " << commit_id << endl;
+        return s;
+    }
 }
 
 void log::do_log() {
