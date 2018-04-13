@@ -46,8 +46,8 @@ void commit::do_commit(string commit_message) {
     commitfile << parent << endl;
     
     rapidjson::Value parent_ids_array(rapidjson::kArrayType);
-    parent_ids_array.PushBack(rapidjson::Value(1), allocator);
-    cobj.AddMember(rapidjson::Value("parent_ids", allocator), parent_ids_array, allocator);   
+    parent_ids_array.PushBack(rapidjson::Value(atoi(parent.c_str())), allocator);
+    cobj.AddMember(rapidjson::Value("parentIds", allocator), parent_ids_array, allocator);   
     
     //storing the commit's message
     commitfile << commit_message << endl;
@@ -110,10 +110,10 @@ void commit::do_commit(string commit_message) {
         Document jans;
         jans.Parse(ans.c_str());
         
-        assert(jans.HasMember("id"));
-        assert(jans["id"].IsInt());
+        assert(jans.HasMember("revision"));
+        assert(jans["revision"].IsInt());
 	
-        int cid = jans["id"].GetInt();
+        int cid = jans["revision"].GetInt();
 	
         //updating the last commit
         utils::write_to_file(LAST_COMMIT_ID_FILE, to_string(cid));
