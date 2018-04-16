@@ -32,5 +32,5 @@ add_compile_options(
         -std=c++11
 )
 
-add_executable(vno-cli ${CLI_SOURCES})
-target_link_libraries(vno-cli curl curlpp)
+add_executable(vno ${CLI_SOURCES})
+target_link_libraries(vno curl curlpp)
