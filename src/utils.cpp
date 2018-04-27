@@ -262,7 +262,7 @@ Document utils::do_initial_get_request(string url, string username, string passw
         
         //if (*response_code != 200) {
             cout << "GET " << url << endl;
-            cerr << "ERROR " << *response_code << " : " << result.str() << endl;
+            cerr << "STATUS " << *response_code << " : " << result.str() << endl;
         //}
         
         Document document;
