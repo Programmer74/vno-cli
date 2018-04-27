@@ -101,9 +101,10 @@ void commit::do_commit(string commit_message, bool suppress_status) {
 	std::cout << strbuf.GetString() << std::endl;
 	
 	utils::repo_id = utils::read_line_from_file(REPO_ID_FILE, 0);
+	utils::branch_id = utils::read_line_from_file(CUR_BRANCH_ID_FILE, 0);
 	
 	int errcode = -1;
-	string ans = utils::do_put_request("/r/" + utils::repo_id + "/1/", strbuf.GetString(), &errcode);
+	string ans = utils::do_put_request("/r/" + utils::repo_id + "/" + utils::branch_id + "/", strbuf.GetString(), &errcode);
 
 	if (errcode == 200) {
 	
