@@ -100,15 +100,54 @@ void checkout_to_commit(string commit_hash) {
 void checkout::do_checkout(string checkout_to) {
     cout << "Checkout to " << checkout_to << " called" << endl;
     
+    utils::repo_id = utils::read_line_from_file(REPO_ID_FILE, 0);
+    
     /*if (status::do_status() != 0) {
         cerr << "Cannot do checkout: working directory not clean!" << endl;
         return;
     }*/
     
-    //if (utils::exists_file(COMMITS_DIR + checkout_to)) {
+    if ((checkout_to[0] < '0') || (checkout_to[0] > '9')) {
+        //checking out to branch
+
+        int required_branch_id = 0;
+        int required_commit_id = 0;
+
+        int errcode = -1;
+        Document d = utils::do_get_request("/repo/" + utils::repo_id, &errcode);
+        
+        if (errcode == 200) {
+            
+            assert(d.HasMember("branchIds"));
+            const Value& a = d["branchIds"];
+            assert(a.IsArray());
+            
+            for (uint i = 0; i < a.GetArray().Size(); i++) {
+                string branchName = "";
+                int commit_id = utils::get_head_by_branch_id(atoi(utils::repo_id.c_str()), a[i].GetInt(), branchName);
+                if (branchName == checkout_to) {
+                    required_branch_id = a[i].GetInt();
+                    required_commit_id = commit_id;
+                }
+            }
+            
+        } else {
+            cout << "Error " << errcode << " while trying to get branch ids." << endl;
+            return;
+        }
+       
+        if (required_branch_id == 0) {
+            cout << "Cannot find branch " << checkout_to << endl;
+            return;
+        }
+        
+        utils::write_to_file(CUR_BRANCH_ID_FILE, to_string(required_branch_id));
+        utils::write_to_file(CUR_BRANCH_NAME_FILE, checkout_to);
+        checkout_to_commit(to_string(required_commit_id));
+    } else {
         checkout_to_commit(checkout_to);
         return;
-    //}
+    }
     
     /*if (utils::exists_file(BRANCHES_DIR + checkout_to)) {
         string commit_hash = utils::read_line_from_file(BRANCHES_DIR + checkout_to, 0);

@@ -15,6 +15,9 @@ using namespace std;
 int status::do_status() {
     cout << "Status called" << endl;
 
+    string current_branch = utils::read_line_from_file(CUR_BRANCH_NAME_FILE, 0);
+    cout << "On branch " << current_branch << endl;
+
     string last_commit_hash;
     ifstream headfile(LAST_COMMIT_ID_FILE);
     getline(headfile, last_commit_hash);

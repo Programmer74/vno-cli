@@ -48,7 +48,7 @@ void branch::do_branch(string branch_name) {
             cout << branch.second << " " << branch.first << endl;
         }
     } else {
-        cout << "Branch called, but generating new branch is not available now." << endl;
+        cout << "Branch called, but generating new branch is not available now at cli." << endl;
         /*cout << "Creating branch " << branch_name << "..." << endl;
         
         //get last commit hash

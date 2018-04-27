@@ -50,9 +50,14 @@ void clone::do_clone(int repo_id) {
     utils::make_dir(repo_name);
     utils::change_dir(repo_name);
     init::do_init();
-    utils::write_to_file(REPO_ID_FILE, "1");
+    
+    utils::write_to_file(REPO_ID_FILE, to_string(repo_id));
+    utils::write_to_file(CUR_BRANCH_ID_FILE, to_string(branch_id));
+    
     string branch_name;
     int commit_id = utils::get_head_by_branch_id(repo_id, branch_id, branch_name);
+    
+    utils::write_to_file(CUR_BRANCH_NAME_FILE, branch_name);
     
     cout << "Trying to checkout to branch " << branch_name << ", commit id " << commit_id << "..." << endl;
     

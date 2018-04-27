@@ -9,6 +9,7 @@
 
 #define LAST_COMMIT_ID_FILE REPO_DIR "/head"
 #define CUR_BRANCH_ID_FILE  REPO_DIR "/current_branch"
+#define CUR_BRANCH_NAME_FILE  REPO_DIR "/current_branch_name"
 #define TMP_COMMIT_FILE     REPO_DIR "/commits/tmpcommit"
 #define REPO_ID_FILE        REPO_DIR "/repoid"
 

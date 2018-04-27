@@ -383,3 +383,4 @@ int utils::get_head_by_branch_id(int repo_id, int branch_id, string & branch_nam
     }
     
 }
+

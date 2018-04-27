@@ -20,7 +20,7 @@ string log::generate_message_for_commit(string commit_id, string* prev_commit_ha
     if ((commit_id == "0") || (commit_id == "null")) {
         return "No such commit\n";
     }
-   
+    
     utils::repo_id = utils::read_line_from_file(REPO_ID_FILE, 0);
    
     int errcode = -1;
@@ -73,6 +73,9 @@ string log::generate_message_for_commit(string commit_id, string* prev_commit_ha
 
 void log::do_log() {
     cout << "Log called" << endl;
+    
+    string current_branch = utils::read_line_from_file(CUR_BRANCH_NAME_FILE, 0);
+    cout << "On branch " << current_branch << endl;
     
     string commit_hash;
     ifstream current_commit_file(LAST_COMMIT_ID_FILE);
