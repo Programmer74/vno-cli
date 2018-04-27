@@ -8,7 +8,7 @@
 class commit
 {
 public:
-    static void do_commit(std::string commit_message);
+    static void do_commit(std::string commit_message, bool suppress_status);
     static void do_dummy_commit_locally(int commit_id);
 };
 

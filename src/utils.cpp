@@ -42,6 +42,14 @@ using namespace rapidjson;
 std::string utils::home_dir = "";
 std::string utils::repo_id = "";
 
+int utils::change_dir(string path) {
+    int res = chdir(path.c_str());
+    if (res < 0) {
+        perror(("change_dir " + path + " failed").c_str());
+    }
+    return res;
+}
+
 int utils::make_dir(string path) {
     int res = mkdir(path.c_str(), ACCESSPERMS);
     if (res < 0) {
@@ -350,4 +358,28 @@ string utils::get_userstuff_by_user_id(int id) {
         usernames_by_id.insert(pair<int, string>(id, s));
     }
     return s;
+}
+
+int utils::get_head_by_branch_id(int repo_id, int branch_id, string & branch_name) {
+    
+    int errcode = -1;
+    Document d = do_get_request("/ref/" + to_string(repo_id) + "/" + to_string(branch_id), &errcode);
+    string s = "";
+    
+    if (errcode == 200) {
+        assert(d.HasMember("branch"));
+        assert(d["branch"].IsInt());
+        
+        assert(d.HasMember("name"));
+        assert(d["name"].IsString());
+        
+        assert(d.HasMember("head"));
+        assert(d["head"].IsInt());
+        
+        branch_name = d["name"].GetString();
+        return d["head"].GetInt();
+    } else {
+        return -1;
+    }
+    
 }

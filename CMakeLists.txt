@@ -17,6 +17,7 @@ set(CLI_SOURCES
 	${vno-cli_SOURCE_DIR}/src/base64/cdecode.c
 	${vno-cli_SOURCE_DIR}/src/base64/cencode.c
 	${vno-cli_SOURCE_DIR}/src/diff.cpp
+	${vno-cli_SOURCE_DIR}/src/clone.cpp
 )
 
 include_directories("${vno-cli_SOURCE_DIR}/inc")

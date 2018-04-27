@@ -14,6 +14,7 @@ public:
     static std::string repo_id;
     
     static std::string exec(std::string cmd);
+    static int change_dir(std::string path);
     static int make_dir(std::string path);
     static int copy_file(std::string source, std::string dest);
     static int move_file(std::string source, std::string dest);
@@ -36,6 +37,7 @@ public:
     static std::string do_put_request(std::string url, std::string body, int* response_code);
     
     static std::string get_userstuff_by_user_id(int id);
+    static int get_head_by_branch_id(int repo_id, int branch_id, std::string & branch_name);
 };
 
 #endif // UTILS_H

@@ -14,6 +14,7 @@
 #include "rest.h"
 #include "credentials.h"
 #include "diff.h"
+#include "clone.h"
 
 using namespace std;
 
@@ -45,7 +46,7 @@ int main(int argc, char** argv) {
             cerr << "Commit message not specified." << endl;
             return 0;
         }
-        commit::do_commit(argv[2]);
+        commit::do_commit(argv[2], false);
     } else if (strcmp(argv[1], "checkout") == 0) {
         if (argc < 3) {
             cerr << "Commit hash or branch name not specified." << endl;
@@ -70,6 +71,12 @@ int main(int argc, char** argv) {
             return 0;
         }
         rest::do_rest(argv[2]);
+    } else if (strcmp(argv[1], "clone") == 0) {
+        if (argc < 3) {
+            cerr << "RepoID not specified." << endl;
+            return 0;
+        }
+        clone::do_clone(atoi(argv[2]));
     }else {
         cerr << "RTFM" << endl;
         return 0;

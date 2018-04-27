@@ -17,10 +17,10 @@
 using namespace std;
 using namespace rapidjson;
 
-void commit::do_commit(string commit_message) {
+void commit::do_commit(string commit_message, bool suppress_status) {
     cout << "Commit called" << endl;
     
-    if (status::do_status() == 0) {
+    if ((!suppress_status) && (status::do_status() == 0)) {
         cerr << "Nothing to commit, working directory clean." << endl;
         return;
     }
