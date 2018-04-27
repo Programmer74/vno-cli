@@ -61,10 +61,10 @@ int main(int argc, char** argv) {
         log::do_log();
     } else if (strcmp(argv[1], "branch") == 0) {
         if (argc < 3) {
-            cerr << "Branch name not specified." << endl;
-            return 0;
+            branch::do_branch("");
+        } else {
+            branch::do_branch(argv[2]);
         }
-        branch::do_branch(argv[2]);
     } else if (strcmp(argv[1], "rest") == 0) {
         if (argc < 3) {
             cerr << "URL for rest not specified." << endl;
