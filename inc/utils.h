@@ -12,6 +12,7 @@ class utils
 public:
     static std::string home_dir;
     static std::string repo_id;
+    static std::string branch_id;
     
     static std::string exec(std::string cmd);
     static int change_dir(std::string path);

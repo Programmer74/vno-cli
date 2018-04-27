@@ -41,6 +41,7 @@ using namespace rapidjson;
 
 std::string utils::home_dir = "";
 std::string utils::repo_id = "";
+std::string utils::branch_id = "";
 
 int utils::change_dir(string path) {
     int res = chdir(path.c_str());
