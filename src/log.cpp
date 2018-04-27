@@ -37,11 +37,22 @@ string log::generate_message_for_commit(string commit_id, string* prev_commit_ha
         
         const Value& a = d["parentIds"];
         assert(a.IsArray());
-        int prev_commit_id = a[0].GetInt();
         
+        int prev_commit_id = 0;
+        
+        if (a.GetArray().Size() == 0) {
+            cout << "No parent commit for this one." << endl;
+            prev_commit_id = 0;
+        } else {
+            prev_commit_id = a[0].GetInt();
+        }
+
         assert(d.HasMember("authorId"));
-        assert(d["authorId"].IsInt());
-        int author_id = d["authorId"].GetInt();
+        int author_id = 0; 
+        
+        if (d["authorId"].IsInt()) {
+            author_id = d["authorId"].GetInt();
+        }
         
         assert(d.HasMember("message"));
         assert(d["message"].IsString());
@@ -66,8 +77,9 @@ string log::generate_message_for_commit(string commit_id, string* prev_commit_ha
         
         return ss.str();
     } else {
-        s = "<some commit with id = " + commit_id + ">";
+        s = "<some commit with id = " + commit_id + ">\n";
         cerr << "Error code " << errcode << " while retreiving info about commit " << commit_id << endl;
+        *prev_commit_hash = "0";
         return s;
     }
 }

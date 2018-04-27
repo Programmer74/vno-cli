@@ -36,27 +36,34 @@ void checkout_to_commit(string commit_hash) {
     if (errcode != 200) {
         cerr << "Error code " << errcode << " while trying to checkout to commit " << commit_hash << endl;
     }
+
     assert(d.HasMember("commit"));
     assert(d["commit"].IsObject());
-    
+
     const Value& c = d["commit"];
     
     assert(c.HasMember("revision"));
     assert(c["revision"].IsInt());
     int this_commit_id = c["revision"].GetInt();
-    
+
     assert(c.HasMember("parentIds"));
     const Value& a = c["parentIds"];
     assert(a.IsArray());
-    int prev_commit_id = a[0].GetInt();
-    parent_commit = to_string(prev_commit_id);
-   
+    if (a.GetArray().Size() == 0) {
+        cout << "No parent commit for this one." << endl;
+        parent_commit = "0";
+    } else {
+        int prev_commit_id = a[0].GetInt();
+        parent_commit = to_string(prev_commit_id);
+    }
+
     assert(c.HasMember("authorId"));
-    assert(c["authorId"].IsInt());
-    
-    int author_id = c["authorId"].GetInt();
-    string author = utils::get_userstuff_by_user_id(author_id);
-    
+    string author = "<someone>";
+    if (c["authorId"].IsInt()) {
+        int author_id = c["authorId"].GetInt();
+        author = utils::get_userstuff_by_user_id(author_id);
+    }
+
     assert(c.HasMember("message"));
     assert(c["message"].IsString());
     string commit_message = c["message"].GetString();
@@ -76,6 +83,7 @@ void checkout_to_commit(string commit_hash) {
     
     assert(d.HasMember("blobs"));
     const Value& b = d["blobs"];
+    
     assert(b.IsArray());
     
     string based64_file = "";
