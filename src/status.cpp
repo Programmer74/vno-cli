@@ -18,7 +18,7 @@ int status::do_status() {
     string last_commit_hash;
     ifstream headfile(LAST_COMMIT_ID_FILE);
     getline(headfile, last_commit_hash);
-
+\
     string tmp;
     
     ifstream last_commit_file(COMMITS_DIR + last_commit_hash);

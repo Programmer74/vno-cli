@@ -16,6 +16,10 @@ using namespace std;
 using namespace rapidjson;
 
 string log::generate_message_for_commit(string commit_id, string* prev_commit_hash) {
+    
+    if ((commit_id == "0") || (commit_id == "null")) {
+        return "No such commit\n";
+    }
    
     utils::repo_id = utils::read_line_from_file(REPO_ID_FILE, 0);
    
@@ -76,7 +80,7 @@ void log::do_log() {
     
     int i = 0;
     
-    while (commit_hash != "null") {
+    while ((commit_hash != "null") && (commit_hash != "0")) {
 
         string parent_commit;
         string info;
