@@ -13,6 +13,7 @@ public:
     static std::string home_dir;
     static std::string repo_id;
     
+    static std::string exec(std::string cmd);
     static int make_dir(std::string path);
     static int copy_file(std::string source, std::string dest);
     static int move_file(std::string source, std::string dest);

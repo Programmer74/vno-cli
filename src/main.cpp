@@ -13,6 +13,7 @@
 #include "branch.h"
 #include "rest.h"
 #include "credentials.h"
+#include "diff.h"
 
 using namespace std;
 
@@ -53,6 +54,8 @@ int main(int argc, char** argv) {
         checkout::do_checkout(argv[2]);
     } else if (strcmp(argv[1], "status") == 0) {
         status::do_status();
+    } else if (strcmp(argv[1], "diff") == 0) {
+        diff::do_diff();
     } else if (strcmp(argv[1], "log") == 0) {
         log::do_log();
     } else if (strcmp(argv[1], "branch") == 0) {

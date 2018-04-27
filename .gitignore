@@ -1,5 +1,6 @@
 *.o
 vno-cli
 vno-cli.*
+vno
 *.creator.user
 build/
