@@ -74,6 +74,7 @@ void log::do_log() {
     ifstream current_commit_file(LAST_COMMIT_ID_FILE);
     getline(current_commit_file, commit_hash);
     
+    int i = 0;
     
     while (commit_hash != "null") {
 
@@ -82,6 +83,13 @@ void log::do_log() {
         info = generate_message_for_commit(commit_hash, &parent_commit);
         cout << info;
         commit_hash = parent_commit;
+        
+        i++;
+        
+        if (i >= 10) {
+            cerr << "Exceeded max commit number" << endl;
+            break;
+        }
     }
     
 }
