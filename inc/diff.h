@@ -8,7 +8,7 @@
 class diff
 {
 public:
-    static int do_diff();
+    static int do_diff(std::string diff_to);
 };
 
 #endif // DIFF_H

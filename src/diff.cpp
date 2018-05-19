@@ -12,13 +12,18 @@
 
 using namespace std;
 
-int diff::do_diff() {
+int diff::do_diff(string diff_to) {
     cout << "Diff called" << endl;
 
     string last_commit_hash;
-    ifstream headfile(LAST_COMMIT_ID_FILE);
-    getline(headfile, last_commit_hash);
-
+    
+    if (diff_to == "") {
+        ifstream headfile(LAST_COMMIT_ID_FILE);
+        getline(headfile, last_commit_hash);
+    } else {
+        last_commit_hash = diff_to;
+    }
+    
     string tmp;
     
     ifstream last_commit_file(COMMITS_DIR + last_commit_hash);
