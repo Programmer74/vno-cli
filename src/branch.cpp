@@ -48,16 +48,26 @@ void branch::do_branch(string branch_name) {
             cout << branch.second << " " << branch.first << endl;
         }
     } else {
-        cout << "Branch called, but generating new branch is not available now at cli." << endl;
-        /*cout << "Creating branch " << branch_name << "..." << endl;
+        cout << "Creating branch " << branch_name << "..." << endl;
         
         //get last commit hash
         string last_commit_hash = utils::read_line_from_file(LAST_COMMIT_ID_FILE, 0);
-    
+        
+        cout << "Last commit: " << last_commit_hash << endl;
+            
+        int errcode;
+        string ans = utils::do_put_request("/ref/" + utils::repo_id + "/" + last_commit_hash + "/" + branch_name, "", &errcode);
+         
+        if (errcode != 200) {
+            cerr << "Error code " << errcode << ":" << endl;
+            cerr << ans << endl;
+            return;
+        }
+        
         //update the new branch to point to our last commit
         utils::write_to_file(BRANCHES_DIR + branch_name, last_commit_hash);
         
         cout << "Creating branch " << branch_name << " done." << endl;
-        cout << "Remember to checkout to branch to develop there!" << endl;*/ 
+        cout << "Remember to checkout to branch to develop there!" << endl;
     }
 }

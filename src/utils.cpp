@@ -325,6 +325,9 @@ string utils::do_put_request(string url, string body, int* response_code) {
     
     *response_code = curlpp::infos::ResponseCode::get(r);
     
+    cout << "PUT " << url << endl;
+    cerr << "STATUS " << *response_code << " : " << response.str() << endl;
+    
     return std::string(response.str());
 }
 
