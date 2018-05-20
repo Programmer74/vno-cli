@@ -14,6 +14,8 @@
 #include "writer.h"
 #include "stringbuffer.h"
 
+#include "checkout.h"
+
 using namespace std;
 using namespace rapidjson;
 
@@ -128,6 +130,8 @@ void commit::do_commit(string commit_message, bool suppress_status) {
         utils::write_to_file(BRANCHES_DIR + current_branch, to_string(cid));
         
         cout << "Commit done; id : " << cid << endl;
+        
+        checkout::do_checkout(to_string(cid));
 	} else {   	
         cerr << "Error code : " << errcode << endl;
         cerr << "Message : " << ans << endl;
