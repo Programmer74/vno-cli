@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <sstream>
 
 #include "utils.h"
 #include "paths.h"
@@ -12,8 +13,11 @@
 
 using namespace std;
 
-int diff::do_diff(string diff_to) {
-    cout << "### Diff against '" << diff_to << "' is called" << endl;
+int diff::do_diff(string diff_to, string & out_data) {
+    
+    std::stringstream sout;
+
+    sout << "### Diff against '" << diff_to << "' is called" << endl;
 
     string diff_to_commit_hash;
     
@@ -24,7 +28,7 @@ int diff::do_diff(string diff_to) {
         if ((diff_to[0] < '0') || (diff_to[0] > '9')) {
             //branch name instead of commit id
             
-            cout << "### Getting id of '" << diff_to << "'" << endl;
+            sout << "### Getting id of '" << diff_to << "'" << endl;
             
             int required_branch_id = -1;
             int required_commit_id = utils::get_head_by_branch_name(diff_to, &required_branch_id);
@@ -36,7 +40,7 @@ int diff::do_diff(string diff_to) {
         diff_to_commit_hash = diff_to;
     }
     
-    cout << "### Generating diff against " << diff_to_commit_hash << endl;
+    sout << "### Generating diff against " << diff_to_commit_hash << endl;
     
     string tmp;
     
@@ -98,24 +102,25 @@ int diff::do_diff(string diff_to) {
     if ((current_state.size() == 0) && 
         (orig_state.size() == 0) &&
         (changed_files.size() == 0)) {
-        cout << endl;
+        sout << endl;
+        out_data = sout.str();
         return 0;
     } else {
         for (pair<string, string> s : changed_files) {
-            cout << "### Changed " << s.first << ": was " << s.second << ", now " << utils::hashfile(s.first) << endl;
-            cout << utils::exec("diff -u " + string(BLOBS_DIR) + s.second + " " + s.first) << endl;
+            sout << "### Changed " << s.first << ": was " << s.second << ", now " << utils::hashfile(s.first) << endl;
+            sout << utils::exec("diff -u " + string(BLOBS_DIR) + s.second + " " + s.first) << endl;
         }
         
         for (pair<string, string> current_file : current_state) {
-             cout << "### Added " << current_file.first << ": now " << current_file.second << endl;
-             cout << utils::exec("diff -u /dev/null " + current_file.first) << endl;
+             sout << "### Added " << current_file.first << ": now " << current_file.second << endl;
+             sout << utils::exec("diff -u /dev/null " + current_file.first) << endl;
         }
         
         for (pair<string, string> orig_file : orig_state) {
-            cout << "### Removed " << orig_file.first << ": was " << orig_file.second << endl;
-            cout << utils::exec("diff -u " + string(BLOBS_DIR) + orig_file.second + " /dev/null") << endl;
+            sout << "### Removed " << orig_file.first << ": was " << orig_file.second << endl;
+            sout << utils::exec("diff -u " + string(BLOBS_DIR) + orig_file.second + " /dev/null") << endl;
         }
-        
+        out_data = sout.str();
         return changed_files.size() + orig_state.size() + current_state.size();
     }
 }

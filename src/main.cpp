@@ -63,11 +63,13 @@ int main(int argc, char** argv) {
     } else if (strcmp(argv[1], "status") == 0) {
         status::do_status();
     } else if (strcmp(argv[1], "diff") == 0) {
+        string diff = "";
         if (argc < 3) {
-            diff::do_diff("");
+            diff::do_diff("", diff);
         } else {
-            diff::do_diff(argv[2]);
+            diff::do_diff(argv[2], diff);
         }
+        cout << diff;
     } else if (strcmp(argv[1], "log") == 0) {
         log::do_log();
     } else if (strcmp(argv[1], "branch") == 0) {
