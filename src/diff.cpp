@@ -21,6 +21,10 @@ int diff::do_diff(string diff_to) {
         ifstream headfile(LAST_COMMIT_ID_FILE);
         getline(headfile, last_commit_hash);
     } else {
+        if ((diff_to[0] < '0') || (diff_to[0] > '9')) {
+            //branch name instead of commit id
+            
+        }
         last_commit_hash = diff_to;
     }
     

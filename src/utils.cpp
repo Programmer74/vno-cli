@@ -388,3 +388,39 @@ int utils::get_head_by_branch_id(int repo_id, int branch_id, string & branch_nam
     
 }
 
+int utils::get_head_by_branch_name(string requiredBranchName) {
+
+    int required_branch_id = 0;
+    int required_commit_id = 0;
+
+    int errcode = -1;
+    Document d = utils::do_get_request("/repo/" + utils::repo_id, &errcode);
+    
+    if (errcode == 200) {
+        
+        assert(d.HasMember("branchIds"));
+        const Value& a = d["branchIds"];
+        assert(a.IsArray());
+        
+        for (uint i = 0; i < a.GetArray().Size(); i++) {
+            string branchName = "";
+            int commit_id = utils::get_head_by_branch_id(atoi(utils::repo_id.c_str()), a[i].GetInt(), branchName);
+            if (branchName == requiredBranchName) {
+                required_branch_id = a[i].GetInt();
+                required_commit_id = commit_id;
+            }
+        }
+        
+    } else {
+        cerr << "Error " << errcode << " while trying to get branch ids." << endl;
+        return -1;
+    }
+   
+    if (required_branch_id == 0) {
+        cerr << "Cannot find branch " << requiredBranchName << endl;
+        return -2;
+    }
+    
+    return required_commit_id;
+}
+
