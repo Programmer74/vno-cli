@@ -39,7 +39,7 @@ public:
     
     static std::string get_userstuff_by_user_id(int id);
     static int get_head_by_branch_id(int repo_id, int branch_id, std::string & branch_name);
-    static int get_head_by_branch_name(std::string requiredBranchName);
+    static int get_head_by_branch_name(std::string requiredBranchName, int* required_branch_id);
 };
 
 #endif // UTILS_H

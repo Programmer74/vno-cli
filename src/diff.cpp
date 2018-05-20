@@ -13,24 +13,34 @@
 using namespace std;
 
 int diff::do_diff(string diff_to) {
-    cout << "Diff called" << endl;
+    cout << "### Diff against '" << diff_to << "' is called" << endl;
 
-    string last_commit_hash;
+    string diff_to_commit_hash;
     
     if (diff_to == "") {
         ifstream headfile(LAST_COMMIT_ID_FILE);
-        getline(headfile, last_commit_hash);
+        getline(headfile, diff_to_commit_hash);
     } else {
         if ((diff_to[0] < '0') || (diff_to[0] > '9')) {
             //branch name instead of commit id
             
+            cout << "### Getting id of '" << diff_to << "'" << endl;
+            
+            int required_branch_id = -1;
+            int required_commit_id = utils::get_head_by_branch_name(diff_to, &required_branch_id);
+            
+            if (required_commit_id <= 0) return -1;
+            
+            diff_to = to_string(required_commit_id);
         }
-        last_commit_hash = diff_to;
+        diff_to_commit_hash = diff_to;
     }
+    
+    cout << "### Generating diff against " << diff_to_commit_hash << endl;
     
     string tmp;
     
-    ifstream last_commit_file(COMMITS_DIR + last_commit_hash);
+    ifstream last_commit_file(COMMITS_DIR + diff_to_commit_hash);
     //skip first four lines
     for (int i = 0; i < 4; i++) {
         getline(last_commit_file, tmp);

@@ -15,6 +15,7 @@
 #include "credentials.h"
 #include "diff.h"
 #include "clone.h"
+#include "paths.h"
 
 using namespace std;
 
@@ -37,6 +38,12 @@ int main(int argc, char** argv) {
     } else if (!credentials::are_credentials_present()) {
         cerr << "I don't know who you are. Please, do vno-cli credentials <username> <password>" << endl;
         return 0;
+    }
+    
+    if (strcmp(argv[1], "init") != 0) {
+        //assume that there is a repo
+        utils::repo_id = utils::read_line_from_file(REPO_ID_FILE, 0);
+        utils::branch_id = utils::read_line_from_file(CUR_BRANCH_ID_FILE, 0);
     }
     
     if (strcmp(argv[1], "init") == 0) {

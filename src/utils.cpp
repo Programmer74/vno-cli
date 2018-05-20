@@ -388,9 +388,9 @@ int utils::get_head_by_branch_id(int repo_id, int branch_id, string & branch_nam
     
 }
 
-int utils::get_head_by_branch_name(string requiredBranchName) {
+int utils::get_head_by_branch_name(string requiredBranchName, int* required_branch_id) {
 
-    int required_branch_id = 0;
+    *required_branch_id = 0;
     int required_commit_id = 0;
 
     int errcode = -1;
@@ -406,7 +406,7 @@ int utils::get_head_by_branch_name(string requiredBranchName) {
             string branchName = "";
             int commit_id = utils::get_head_by_branch_id(atoi(utils::repo_id.c_str()), a[i].GetInt(), branchName);
             if (branchName == requiredBranchName) {
-                required_branch_id = a[i].GetInt();
+                *required_branch_id = a[i].GetInt();
                 required_commit_id = commit_id;
             }
         }
