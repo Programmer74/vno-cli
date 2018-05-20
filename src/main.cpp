@@ -15,6 +15,7 @@
 #include "credentials.h"
 #include "diff.h"
 #include "clone.h"
+#include "merge.h"
 #include "paths.h"
 
 using namespace std;
@@ -90,7 +91,13 @@ int main(int argc, char** argv) {
             return 0;
         }
         clone::do_clone(atoi(argv[2]));
-    }else {
+    } else if (strcmp(argv[1], "merge") == 0) {
+        if (argc < 3) {
+            cerr << "Branch name not specified." << endl;
+            return 0;
+        }
+        merge::do_merge(argv[2]);
+    } else {
         cerr << "RTFM" << endl;
         return 0;
     }
