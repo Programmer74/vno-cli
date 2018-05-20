@@ -43,4 +43,7 @@ void merge::do_merge(string their_branch_name) {
     cout << "Step 4: Applying patch" << endl;
     string command = "patch -p0 <" + filename;
     system(command.c_str());
+    
+    cout << "Step 5: Now you are able to commit changes to this branch manually." << endl;
+    cout << "Auto-commit will be enabled later." << endl;
 }
