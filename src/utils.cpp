@@ -115,6 +115,26 @@ std::string utils::exec(std::string cmd) {
     return result;
 }
 
+string utils::replace_substring(string original, string to_find, string to_replace, int iterations) {
+    size_t index = 0;
+    int i = 0;
+    while (true) {
+         /* Locate the substring to replace. */
+         index = original.find(to_find, index);
+         if (index == std::string::npos) break;
+    
+         /* Make the replacement. */
+         original.replace(index, to_find.length(), to_replace);
+    
+         /* Advance index forward so the next iteration doesn't pick it up as well. */
+         index += to_replace.length();
+         
+         i++;
+         if (i > iterations) break;
+    }
+    return original;
+}
+
 string utils::hashfile(string filename)
 { 
     std::ifstream fp(filename);

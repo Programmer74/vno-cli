@@ -118,7 +118,10 @@ int diff::do_diff(string diff_to, string & out_data) {
         
         for (pair<string, string> orig_file : orig_state) {
             sout << "### Removed " << orig_file.first << ": was " << orig_file.second << endl;
-            sout << utils::exec("diff -u " + string(BLOBS_DIR) + orig_file.second + " /dev/null") << endl;
+            string rm_diff = utils::exec("diff -u " + string(BLOBS_DIR) + orig_file.second + " /dev/null");
+            //replacing path ./vno/blobs/XXX to real path in diff output
+            rm_diff = utils::replace_substring(rm_diff, string(BLOBS_DIR) + orig_file.second, orig_file.first, 0);
+            sout << rm_diff << endl;
         }
         out_data = sout.str();
         return changed_files.size() + orig_state.size() + current_state.size();
