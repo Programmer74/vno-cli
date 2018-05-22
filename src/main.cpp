@@ -45,6 +45,13 @@ int main(int argc, char** argv) {
         //assume that there is a repo
         utils::repo_id = utils::read_line_from_file(REPO_ID_FILE, 0);
         utils::branch_id = utils::read_line_from_file(CUR_BRANCH_ID_FILE, 0);
+        
+        utils::proxy_url = utils::read_line_from_file(PROXY_URL_FILE, 0);
+        if (utils::proxy_url == "") {
+            cout << "No proxy specified." << endl;
+        } else {
+            cout << "Using proxy " << utils::proxy_url << " for all GET requests." << endl;
+        }
     }
     
     if (strcmp(argv[1], "init") == 0) {

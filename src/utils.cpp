@@ -42,6 +42,7 @@ using namespace rapidjson;
 std::string utils::home_dir = "";
 std::string utils::repo_id = "";
 std::string utils::branch_id = "";
+std::string utils::proxy_url = "";
 
 int utils::change_dir(string path) {
     int res = chdir(path.c_str());
@@ -218,6 +219,9 @@ int utils::write_to_file(string filename, string to_write) {
 
 string utils::read_line_from_file(string filename, int line_no) {
     ifstream file(filename);
+    if (file.fail()) {
+        return "";
+    }
     string line;
     for (int i = 0; i <= line_no; i++) {
         getline(file, line);
@@ -255,7 +259,8 @@ vector<string> utils::parse_file_tree(string pat){
 Document utils::do_initial_get_request(string url, string username, string password, int* response_code) {
     try
     {
-        string addr = SRV_ADDRESS;
+        string addr = utils::proxy_url;
+        if (addr == "") addr = SRV_ADDRESS;
         url = addr + url;
     
         // That's all that is needed to do cleanup of used resources (RAII style).

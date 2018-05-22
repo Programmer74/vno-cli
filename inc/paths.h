@@ -17,6 +17,8 @@
 #define COMMITS_DIR         REPO_DIR "/commits/"
 #define BLOBS_DIR           REPO_DIR "/blobs/"
 
+#define PROXY_URL_FILE      REPO_DIR "/proxy"
+
 #define SRV_ADDRESS         "167.99.141.8:8080"
 
 #endif // PATHS_H
