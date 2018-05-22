@@ -323,7 +323,9 @@ Document utils::do_get_request(string url, int* response_code) {
 
 string utils::do_put_request(string url, string body, int* response_code) {
     std::list<std::string> header;
-    string srv = SRV_ADDRESS;
+    string srv = utils::proxy_url;
+    if (srv == "") srv = SRV_ADDRESS;
+    
     header.push_back("Content-Type: application/json");
     
     if (gusername == "") {
