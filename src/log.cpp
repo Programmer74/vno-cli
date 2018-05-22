@@ -65,6 +65,13 @@ string log::generate_message_for_commit(string commit_id, string* prev_commit_ha
         string author;
     
         *prev_commit_hash = to_string(prev_commit_id);
+        
+        if (author_id == 0) {
+            cout << "Some errorneous commit: author_id is wrong." << endl;
+            s = "<some commit with id = " + commit_id + ">\n";
+            *prev_commit_hash = "0";
+            return s;
+        }
         author = utils::get_userstuff_by_user_id(author_id);
         
         stringstream ss;
