@@ -19,6 +19,6 @@
 
 #define PROXY_URL_FILE      REPO_DIR "/proxy"
 
-#define SRV_ADDRESS         "167.99.141.8:8080"
+#define SRV_ADDRESS         "64.52.22.90:8080"
 
 #endif // PATHS_H

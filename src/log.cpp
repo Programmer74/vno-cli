@@ -33,26 +33,26 @@ string log::generate_message_for_commit(string commit_id, string* prev_commit_ha
         assert(d.HasMember("revision"));
         assert(d["revision"].IsInt());
         
-        assert(d.HasMember("parentIds"));
+        assert(d.HasMember("parents"));
         
-        const Value& a = d["parentIds"];
-        assert(a.IsArray());
-        
+        const Value& a = d["parents"];
         int prev_commit_id = 0;
-        
+        assert(a.IsArray());
         if (a.GetArray().Size() == 0) {
             cout << "No parent commit for this one." << endl;
             prev_commit_id = 0;
         } else {
-            prev_commit_id = a[0].GetInt();
+            const Value& ad = a[0];
+            prev_commit_id = ad["revision"].GetInt();
+            //parent_commit = to_string(prev_commit_id);
         }
-
-        assert(d.HasMember("authorId"));
-        int author_id = 0; 
-        
-        if (d["authorId"].IsInt()) {
-            author_id = d["authorId"].GetInt();
-        }
+    
+        //assert(d.HasMember("authorId"));
+        string author = "<someone>";
+        //if (c["authorId"].IsInt()) {
+            int author_id = 1;//c["authorId"].GetInt();
+            author = utils::get_userstuff_by_user_id(author_id);
+        //}
         
         assert(d.HasMember("message"));
         assert(d["message"].IsString());
@@ -62,7 +62,6 @@ string log::generate_message_for_commit(string commit_id, string* prev_commit_ha
         assert(d["timestamp"].IsInt64());
         time_t commit_time = d["timestamp"].GetInt64();
         
-        string author;
     
         *prev_commit_hash = to_string(prev_commit_id);
         

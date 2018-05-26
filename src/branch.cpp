@@ -28,14 +28,14 @@ void branch::do_branch(string branch_name) {
         
         if (errcode == 200) {
             
-            assert(d.HasMember("branchIds"));
-            const Value& a = d["branchIds"];
+            assert(d.HasMember("branches"));
+            const Value& a = d["branches"];
             assert(a.IsArray());
             
             for (uint i = 0; i < a.GetArray().Size(); i++) {
                 string branchName = "";
-                utils::get_head_by_branch_id(atoi(utils::repo_id.c_str()), a[i].GetInt(), branchName);
-                branches.push_back(make_pair(branchName, a[i].GetInt()));
+                utils::get_head_by_branch_id(atoi(utils::repo_id.c_str()), a[i]["branch"].GetInt(), branchName);
+                branches.push_back(make_pair(branchName, a[i]["branch"].GetInt()));
             }
             
         } else {

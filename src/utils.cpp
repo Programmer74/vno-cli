@@ -403,12 +403,17 @@ int utils::get_head_by_branch_id(int repo_id, int branch_id, string & branch_nam
         
         assert(d.HasMember("name"));
         assert(d["name"].IsString());
+         
+        branch_name = d["name"].GetString();
         
         assert(d.HasMember("head"));
-        assert(d["head"].IsInt());
-        
-        branch_name = d["name"].GetString();
-        return d["head"].GetInt();
+        if (d["head"].IsNull()) {
+            return -1;
+        } else {
+        //assert(d["head"].IsInt());
+       
+            return d["head"]["revision"].GetInt();
+        }
     } else {
         return -1;
     }
@@ -425,15 +430,15 @@ int utils::get_head_by_branch_name(string requiredBranchName, int* required_bran
     
     if (errcode == 200) {
         
-        assert(d.HasMember("branchIds"));
-        const Value& a = d["branchIds"];
+        assert(d.HasMember("branches"));
+        const Value& a = d["branches"];
         assert(a.IsArray());
         
         for (uint i = 0; i < a.GetArray().Size(); i++) {
             string branchName = "";
-            int commit_id = utils::get_head_by_branch_id(atoi(utils::repo_id.c_str()), a[i].GetInt(), branchName);
+            int commit_id = utils::get_head_by_branch_id(atoi(utils::repo_id.c_str()), a[i]["branch"].GetInt(), branchName);
             if (branchName == requiredBranchName) {
-                *required_branch_id = a[i].GetInt();
+                *required_branch_id = a[i]["branch"].GetInt();
                 required_commit_id = commit_id;
             }
         }

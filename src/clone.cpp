@@ -38,10 +38,17 @@ void clone::do_clone(int repo_id) {
         assert(d["description"].IsString());
         repo_desc = d["description"].GetString();
         
-        assert(d.HasMember("branchIds"));
-        const Value& a = d["branchIds"];
+        assert(d.HasMember("branches"));
+        const Value& a = d["branches"];
+        
         assert(a.IsArray());
-        branch_id = a[0].GetInt();
+    
+        const Value& c = a[0];
+        
+        assert(c.HasMember("branch"));
+        assert(c["branch"].IsInt());
+        
+        branch_id = c["branch"].GetInt();
     } else {
         cout << "Error " << errcode << " while trying to clone repo " << repo_id << endl;
     }

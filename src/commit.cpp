@@ -48,8 +48,11 @@ void commit::do_commit(string commit_message, bool suppress_status) {
     commitfile << parent << endl;
     
     rapidjson::Value parent_ids_array(rapidjson::kArrayType);
-    parent_ids_array.PushBack(rapidjson::Value(atoi(parent.c_str())), allocator);
-    cobj.AddMember(rapidjson::Value("parentIds", allocator), parent_ids_array, allocator);   
+    
+    rapidjson::Value pobj(rapidjson::kObjectType);
+    pobj.AddMember(rapidjson::Value("revision", allocator), rapidjson::Value(atoi(parent.c_str())), allocator);
+    parent_ids_array.PushBack(pobj, allocator);
+    cobj.AddMember(rapidjson::Value("parents", allocator), parent_ids_array, allocator);   
     
     //storing the commit's message
     commitfile << commit_message << endl;

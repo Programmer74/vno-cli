@@ -30,47 +30,48 @@ void checkout_to_commit(string commit_hash) {
     utils::branch_id = utils::read_line_from_file(CUR_BRANCH_ID_FILE, 0);
     
     int errcode = -1;
-    Document d = utils::do_get_request("/r/full/" + utils::repo_id + "/" + utils::branch_id + "/" + commit_hash + "/", &errcode);
+    Document d = utils::do_get_request("/r/" + utils::repo_id + "/" + utils::branch_id + "/" + commit_hash + "/", &errcode);
     string s = "";
     
     if (errcode != 200) {
         cerr << "Error code " << errcode << " while trying to checkout to commit " << commit_hash << endl;
     }
 
-    assert(d.HasMember("commit"));
+    /*assert(d.HasMember("commit"));
     assert(d["commit"].IsObject());
 
-    const Value& c = d["commit"];
+    const Value& c = d["commit"];*/
     
-    assert(c.HasMember("revision"));
-    assert(c["revision"].IsInt());
-    int this_commit_id = c["revision"].GetInt();
+    assert(d.HasMember("revision"));
+    assert(d["revision"].IsInt());
+    int this_commit_id = d["revision"].GetInt();
 
-    assert(c.HasMember("parentIds"));
-    const Value& a = c["parentIds"];
+    assert(d.HasMember("parents"));
+    const Value& a = d["parents"];
     assert(a.IsArray());
     if (a.GetArray().Size() == 0) {
         cout << "No parent commit for this one." << endl;
         parent_commit = "0";
     } else {
-        int prev_commit_id = a[0].GetInt();
+        const Value& ad = a[0];
+        int prev_commit_id = ad["revision"].GetInt();
         parent_commit = to_string(prev_commit_id);
     }
 
-    assert(c.HasMember("authorId"));
+    //assert(d.HasMember("authorId"));
     string author = "<someone>";
-    if (c["authorId"].IsInt()) {
-        int author_id = c["authorId"].GetInt();
+    //if (c["authorId"].IsInt()) {
+        int author_id = 1;//c["authorId"].GetInt();
         author = utils::get_userstuff_by_user_id(author_id);
-    }
+    //}
 
-    assert(c.HasMember("message"));
-    assert(c["message"].IsString());
-    string commit_message = c["message"].GetString();
+    assert(d.HasMember("message"));
+    assert(d["message"].IsString());
+    string commit_message = d["message"].GetString();
     
-    assert(c.HasMember("timestamp"));
-    assert(c["timestamp"].IsInt64());
-    time_t commit_time = c["timestamp"].GetInt64();
+    assert(d.HasMember("timestamp"));
+    assert(d["timestamp"].IsInt64());
+    time_t commit_time = d["timestamp"].GetInt64();
 
     stringstream ss;
 
@@ -121,6 +122,8 @@ void checkout::do_checkout(string checkout_to) {
 
         int required_branch_id = -1;
         int required_commit_id = utils::get_head_by_branch_name(checkout_to, &required_branch_id);
+        
+        cout << "Required commit id is " << required_commit_id << endl;
         
         if (required_commit_id <= 0) return;
         
